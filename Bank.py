@@ -16,11 +16,11 @@ maxAge = df['age'].max()
 step = 10
 bin_range = np.arange(18,95+step, step+1)
 out, bins = pd.cut(df['age'], bins=bin_range, include_lowest=True, right=False, retbins=True)
-#out.value_counts(sort=False).plot.bar(title='Age of Respondents')
-#agePlot = plt.plot(df['age'])
-#plt.xlabel("Age of Clients")
-#plt.ylabel("Number of Clients")
-#plt.show()
+out.value_counts(sort=False).plot.bar(title='Age of Respondents')
+agePlot = plt.plot(df['age'])
+plt.xlabel("Age of Clients")
+plt.ylabel("Number of Clients")
+plt.show()
 
 # Using Min-Max Normalization for Age Attribute
 normalized_df = (((df['age'] - minAge) / (maxAge - minAge))*(1.0-0)+0)
@@ -33,11 +33,11 @@ normalized_df = (((df['age'] - minAge) / (maxAge - minAge))*(1.0-0)+0)
 step = 0.1
 bin_range_normalized = np.arange(0.0, 1.0+step, step+0.1)
 out, bins = pd.cut(normalized_df, bins=bin_range_normalized, include_lowest=True, right=False, retbins=True)
-#out.value_counts(sort=False).plot.bar(title='Age of Respondents')
-#normalizedAgePlot = plt.plot(normalized_df)
-#plt.xlabel("Age of Clients")
-#plt.ylabel("Number of Clients")
-#plt.show()
+out.value_counts(sort=False).plot.bar(title='Age of Respondents')
+normalizedAgePlot = plt.plot(normalized_df)
+plt.xlabel("Age of Clients")
+plt.ylabel("Number of Clients")
+plt.show()
 
 # Using z-score Normalization of the Age Attribute
 zScore_Normalized_df = ((df['age'] - ageMedian) / ageStd)
@@ -50,14 +50,14 @@ zScore_Normalized_df = ((df['age'] - ageMedian) / ageStd)
 step = 0.5
 bin_range_zScorenormalized = np.arange(-2, 0.5+step, step)
 out, bins = pd.cut(zScore_Normalized_df, bins=bin_range_zScorenormalized, include_lowest=True, right=False, retbins=True)
-#out.value_counts(sort=False).plot.bar(title='Age of Respondents')
-#zScoreNormalizedAgePlot = plt.plot(normalized_df)
-#plt.xlabel("Age of Clients")
-#plt.ylabel("Number of Clients")
-#plt.show()
+out.value_counts(sort=False).plot.bar(title='Age of Respondents')
+zScoreNormalizedAgePlot = plt.plot(normalized_df)
+plt.xlabel("Age of Clients")
+plt.ylabel("Number of Clients")
+plt.show()
 
 ###################################################################
-#Calulating Balance
+#Calulating Balance (NOT COMPLETED)
 balanceMean = df['balance'].mean()
 balanceMedian = df['balance'].median()
 balanceStd = df['balance'].std()
@@ -147,10 +147,6 @@ out, bins = pd.cut(df['day'], bins=bin_range, include_lowest=True, right=False, 
 
 # Using Min-Max Normalization for Day Attribute
 normalized_df = (((df['age'] - minAge) / (maxAge - minAge))*(1.0-0)+0)
-#print(normalized_df.min())
-#print(normalized_df.max())
-#print(normalized_df.mean())
-#print(normalized_df.median())
 
 #Prints Min-Max Normalized Histogram of the Day Attribute
 step = 0.1
@@ -164,10 +160,6 @@ out, bins = pd.cut(normalized_df, bins=bin_range_normalized, include_lowest=True
 
 # Using z-score Normalization of the Day Attribute
 #zScore_Normalized_df = ((df['age'] - ageMedian) / ageStd)
-#print(zScore_Normalized_df.min())
-#print(zScore_Normalized_df.max())
-#print(zScore_Normalized_df.mean())
-#print(zScore_Normalized_df.median())
 
 #Prints z-score Normalized Histogram of the Day Attribute
 step = 0.5
@@ -206,10 +198,6 @@ plt.show()
 
 # Using Min-Max Normalization for Duration Attribute
 duration_normalized_df = (((df['duration'] - durationMin) / (durationMax - durationMin))*(1.0-0)+0)
-#print(normalized_df.min())
-#print(normalized_df.max())
-#print(normalized_df.mean())
-#print(normalized_df.median())
 
 #Prints Min-Max Normalized Histogram of the Age Attribute
 step = 0.1
@@ -236,6 +224,7 @@ plt.xlabel("Call Duration (in Seconds)")
 plt.ylabel("Number of Calls")
 plt.show()
 print(duration_zScore_Normalized_df)
+
 ###################################################################
 #Calulating poutcome
 #counts = df['poutcome'].value_counts().plot.bar()
