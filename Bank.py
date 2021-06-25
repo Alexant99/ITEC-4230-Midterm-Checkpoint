@@ -2,8 +2,23 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from pandas import cut
+from scipy import stats
 
 df = pd.read_csv("H:\\bank-full.csv")
+
+df['job'] =df['job'].astype('category')
+df['marital'] =df['marital'].astype('category')
+df['education'] =df['education'].astype('category')
+df['default'] =df['default'].astype('category')
+df['housing'] =df['housing'].astype('category')
+df['loan'] =df['loan'].astype('category')
+df['contact'] =df['contact'].astype('category')
+df['month'] =df['month'].astype('category')
+df['poutcome'] =df['poutcome'].astype('category')
+df['y'] =df['y'].astype('category')
+print(df.info())
+
+df.isnull().sum().sum()
 
 #Calulating Age
 ageMean = df['age'].mean()
@@ -12,16 +27,9 @@ ageMedian = df['age'].median()
 minAge = df['age'].min()
 maxAge = df['age'].max()
 
-#Prints raw verison of age attribute
-plt.plot(df['age'])
-plt.title('Age of Respondents (Raw Data)')
-plt.xlabel("Age of Clients")
-plt.ylabel("Number of Clients")
-plt.show()
-
 #This code prints out a formatted version of the Age Attribute from Bank-Full.csv
 step = 10
-bin_range = np.arange(18,95+step, step+1)
+bin_range = np.arange(minAge,maxAge+step, step+1)
 out, bins = pd.cut(df['age'], bins=bin_range, include_lowest=True, right=False, retbins=True)
 out.value_counts(sort=False).plot.bar(title='Age of Respondents')
 agePlot = plt.plot()
@@ -30,27 +38,37 @@ plt.ylabel("Number of Clients")
 plt.show()
 
 # Using Min-Max Normalization for Age Attribute
-normalized_df = (((df['age'] - minAge) / (maxAge - minAge))*(1.0-0)+0)
+def MinMaxScalar(X):
+    return (X - minAge)/(maxAge-minAge)
+
+df['minMaxNormalization_Age'] = df['age'].apply(MinMaxScalar)
+
+MinMaxNormalized_AgeMin = df['minMaxNormalization_Age'].min()
+MinMaxNormalized_AgeMax = df['minMaxNormalization_Age'].max()
 
 #Prints Min-Max Normalized Histogram of the Age Attribute
 step = 0.1
 bin_range_normalized = np.arange(0.0, 1.0+step, step+0.1)
-out, bins = pd.cut(normalized_df, bins=bin_range_normalized, include_lowest=True, right=False, retbins=True)
+out, bins = pd.cut(df['minMaxNormalization_Age'], bins=bin_range_normalized, include_lowest=True, right=False, retbins=True)
 out.value_counts(sort=False).plot.bar(title='Age of Respondents (Min-Max Normalized)')
-normalizedAgePlot = plt.plot(normalized_df)
+normalizedAgePlot = plt.plot()
 plt.xlabel("Age of Clients")
 plt.ylabel("Number of Clients")
 plt.show()
 
 # Using z-score Normalization of the Age Attribute
-zScore_Normalized_df = ((df['age'] - ageMedian) / ageStd)
+df['z_score_age'] = stats.zscore(df['age'])
+#zScore_Age_df = df.loc[df['z_score'].abs()<=3]
+
+zScore_AgeMin = df['z_score_age'].min()
+zScore_AgeMax = df['z_score_age'].max()
 
 #Prints z-score Normalized Histogram of the Age Attribute
 step = 0.5
-bin_range_zScorenormalized = np.arange(-2, 0.5+step, step)
-out, bins = pd.cut(zScore_Normalized_df, bins=bin_range_zScorenormalized, include_lowest=True, right=False, retbins=True)
+bin_range_zScoreAgenormalized = np.arange(zScore_AgeMin, zScore_AgeMax+step, step)
+out, bins = pd.cut(df['z_score_age'], bins=bin_range_zScoreAgenormalized, include_lowest=True, right=False, retbins=True)
 out.value_counts(sort=False).plot.bar(title='Age of Respondents (z-score Normalized)')
-zScoreNormalizedAgePlot = plt.plot(normalized_df)
+zScoreNormalizedAgePlot = plt.plot()
 plt.xlabel("Age of Clients")
 plt.ylabel("Number of Clients")
 plt.show()
@@ -95,13 +113,6 @@ balanceStd = df['balance'].std()
 balanceMax = df['balance'].max()
 balanceMin = df['balance'].min()
 
-#prints raw version of column
-balancePlot = plt.plot(df['balance'])
-plt.title('Balance of Respondents (Raw Data)')
-plt.xlabel("Balance of Clients")
-plt.ylabel("Number of Clients")
-plt.show()
-
 #This code prints out a formatted version of the Balance Attribute from Bank-Full.csv
 #NOT FINISHED
 #for index, row in df.itertuples():#
@@ -118,26 +129,38 @@ plt.ylabel("Number of Clients")
 plt.show()
 
 # Using Min-Max Normalization for Balance Attribute
-#Most data values supersede the new 1.0 Max, due to the negative integers
-normalizedBalance_df = ((df['balance'] - balanceMin / (balanceMax - balanceMin))*(1.0-0)+0)
+def MinMaxScalar(X):
+    return (X - balanceMin)/(balanceMax-balanceMin)
 
-#Prints Min-Max Normalized Histogram for Balance Attribute#
-step = 0.01
-bin_range_Balancenormalized = np.arange(0.0, 1.0+step, step)
-out, bins = pd.cut(normalizedBalance_df, bins=bin_range_Balancenormalized, include_lowest=True, right=False, retbins=True)
-out.value_counts(sort=False).plot(kind='bar', title='Balance of Respondents (Normalized Max/Min)')
-zScoreNormalizedBalancePlot = plt.plot(kind='bar')
+df['minMaxNormalization_Balance'] = df['balance'].apply(MinMaxScalar)
+
+MinMaxNormalized_BalanceMin = df['minMaxNormalization_Balance'].min()
+MinMaxNormalized_BalanceMax = df['minMaxNormalization_Balance'].max()
+
+print(MinMaxNormalized_BalanceMin)
+print(MinMaxNormalized_BalanceMax)
+
+#Prints Min-Max Normalized Histogram of the Balance Attribute
+step = 0.1
+bin_range_normalized = np.arange(0.0, 1.0+step, step+0.1)
+out, bins = pd.cut(df['minMaxNormalization_Balance'], bins=bin_range_normalized, include_lowest=True, right=False, retbins=True)
+out.value_counts(sort=False).plot.bar(title='Balance of Respondents (Min-Max Normalized)')
+normalizedAgePlot = plt.plot()
 plt.xlabel("Balance of Clients")
 plt.ylabel("Number of Clients")
 plt.show()
 
 # Using z-score Normalization
-zScore_BalanceNormalized_df = ((df['balance'] - balanceMedian) / balanceStd)
+#zScore_BalanceNormalized_df = ((df['balance'] - balanceMedian) / balanceStd)
+df['z_score_balance'] = stats.zscore(df['balance'])
+
+zScore_AgeMin = df['z_score_balance'].min()
+zScore_AgeMax = df['z_score_balance'].max()
 
 #Prints z-score Normalized Histogram
 step = 0.5
-bin_range_zScoreBalancenormalized = np.arange(-2, 0.5+step, step)
-out, bins = pd.cut(zScore_BalanceNormalized_df, bins=bin_range_zScoreBalancenormalized, include_lowest=True, right=False, retbins=True)
+bin_range_zScoreBalancenormalized = np.arange(zScore_AgeMin, zScore_AgeMax+step, step)
+out, bins = pd.cut(df['z_score_balance'], bins=bin_range_zScoreBalancenormalized, include_lowest=True, right=False, retbins=True)
 out.value_counts(sort=False).plot.bar(title='Balance of Respondents (Z-Score)')
 zScoreNormalizedAgePlot = plt.plot()
 plt.xlabel("Balance of Clients")
@@ -226,17 +249,9 @@ durationMedian = df['duration'].median()
 durationMax = df['duration'].max()
 durationMin = df['duration'].min()
 
-#prints raw version of column
-#PRINTS AS LINE GRAPH
-durationPlot = plt.plot(df['duration'])
-plt.title('Call Durations for Customers (Raw Data)')
-plt.xlabel("Number of Calls")
-plt.ylabel("Call Duration (in Seconds)")
-plt.show()
-
 #This code prints out a formatted version of the Duration Attribute from Bank-Full.csv
 step = 50
-duration_bin_range = np.arange(durationMin,durationMax+step, step)
+duration_bin_range = np.arange(durationMin, durationMax+step, step)
 out, bins = pd.cut(df['duration'], bins=duration_bin_range, include_lowest=True, right=False, retbins=True)
 out.value_counts(sort=False).plot.bar(title='Call Durations for Customers')
 durationPlotFormatted = plt.plot()
@@ -245,27 +260,35 @@ plt.ylabel("Number of Calls")
 plt.show()
 
 # Using Min-Max Normalization for Duration Attribute
-duration_normalized_df = (((df['duration'] - durationMin) / (durationMax - durationMin))*(1.0-0)+0)
+def MinMaxScalar(X):
+    return (X - durationMin)/(durationMax-durationMin)
+
+df['minMaxNormalization_Duration'] = df['duration'].apply(MinMaxScalar)
+
+MinMaxNormalized_DurationMin = df['minMaxNormalization_Duration'].min()
+MinMaxNormalized_DurationMax = df['minMaxNormalization_Duration'].max()
 
 #Prints Min-Max Normalized Histogram of the Duration Attribute
 step = 0.1
-duration_bin_range_normalized = np.arange(duration_normalized_df.min(), duration_normalized_df.max()+step, step+0.1)
-out, bins = pd.cut(duration_normalized_df, bins=duration_bin_range_normalized, include_lowest=True, right=False, retbins=True)
+duration_bin_range_normalized = np.arange(MinMaxNormalized_DurationMin, MinMaxNormalized_DurationMax+step, step+0.1)
+out, bins = pd.cut(df['minMaxNormalization_Duration'], bins=duration_bin_range_normalized, include_lowest=True, right=False, retbins=True)
 out.value_counts(sort=False).plot.bar(title='Call Durations for Customers (Min/Max Normalization)')
-durationPlotMinMaxNormalization = plt.plot(df['duration'])
+durationPlotMinMaxNormalization = plt.plot()
 plt.xlabel("Call Duration (in Seconds)")
 plt.ylabel("Number of Calls")
 plt.show()
 
 # Using z-score Normalization of the Duration Attribute
-duration_zScore_Normalized_df = ((df['duration'] - durationMedian) / durationStd)
+df['z_score_duration'] = stats.zscore(df['duration'])
+
+zScore_DurationMin = df['z_score_duration'].min()
+zScore_DurationMax = df['z_score_duration'].max()
 
 #Prints z-score Normalized Histogram of the Duration Attribute
 step = 0.5
-bin_range_durationzScorenormalized = np.arange(duration_zScore_Normalized_df.min(), duration_zScore_Normalized_df.max()+step, step)
-out, bins = pd.cut(duration_zScore_Normalized_df, bins=bin_range_durationzScorenormalized, include_lowest=True, right=False, retbins=True)
+duration_bin_range_normalized = np.arange(zScore_DurationMin, zScore_DurationMax+step, step)
+out, bins = pd.cut(df['z_score_duration'], bins=duration_bin_range_normalized, include_lowest=True, right=False, retbins=True)
 durationHistogram = out.value_counts(sort=False).plot(kind = 'bar', title='Call Durations for Customers (zScore Normalization)')
-
 durationPlotzScoreNormalization = plt.plot()
 plt.title('Call Durations for Customers (zScore Normalization)')
 plt.xlabel("Call Duration (in Seconds)")
@@ -280,14 +303,6 @@ campaignMedian = df['campaign'].median()
 campaignMax = df['campaign'].max()
 campaignMin = df['campaign'].min()
 
-#prints raw version of column
-#PRINTS AS LINE GRAPH
-campaignPlot = plt.plot(df['campaign'])
-plt.title('Number of contacts performed during this campaign and for this client (Raw Data)')
-plt.xlabel("Number of Contacts Performed")
-plt.ylabel("Frequency")
-plt.show()
-
 #This code prints out a formatted version of the Campaign Attribute from Bank-Full.csv
 step = 1
 duration_bin_range = np.arange(campaignMin, campaignMax+step, step)
@@ -299,12 +314,18 @@ plt.ylabel("Frequency")
 plt.show()
 
 # Using Min-Max Normalization for Campaign Attribute
-campaign_normalized_df = (((df['campaign'] - campaignMin) / (campaignMax - campaignMin))*(1.0-0)+0)
+def MinMaxScalar(X):
+    return (X - campaignMin)/(campaignMax-campaignMin)
+
+df['minMaxNormalization_Campaign'] = df['campaign'].apply(MinMaxScalar)
+
+MinMaxNormalized_CampaignMin = df['minMaxNormalization_Campaign'].min()
+MinMaxNormalized_CampaignMax = df['minMaxNormalization_Campaign'].max()
 
 #Prints Min-Max Normalized Histogram of the Campaign Attribute
 step = 0.1
-campaign_bin_range_normalized = np.arange(duration_normalized_df.min(), duration_normalized_df.max()+step, step)
-out, bins = pd.cut(campaign_normalized_df, bins=campaign_bin_range_normalized, include_lowest=True, right=False, retbins=True)
+campaign_bin_range_normalized = np.arange(MinMaxNormalized_CampaignMin, MinMaxNormalized_CampaignMax+step, step)
+out, bins = pd.cut(df['minMaxNormalization_Campaign'], bins=campaign_bin_range_normalized, include_lowest=True, right=False, retbins=True)
 out.value_counts(sort=False).plot.bar(title='Number of contacts performed during this campaign and for this client (Min/Max Normalization)')
 campaignPlotMinMaxNormalization = plt.plot()
 plt.xlabel("Number of Contacts Performed")
@@ -312,23 +333,19 @@ plt.ylabel("Frequency")
 plt.show()
 
 # Using z-score Normalization of the Campaign Attribute
-campaign_zScore_Normalized_df = ((df['campaign'] - campaignMedian) / campaignStd)
+df['z_score_campaign'] = stats.zscore(df['campaign'])
+
+zScore_CampaignMin = df['z_score_campaign'].min()
+zScore_CampaignMax = df['z_score_campaign'].max()
 
 #Prints z-score Normalized Histogram of the Campaign Attribute
 step = 0.5
-bin_range_campaignzScorenormalized = np.arange(campaign_zScore_Normalized_df.min(), campaign_zScore_Normalized_df.max()+step, step)
-out, bins = pd.cut(campaign_zScore_Normalized_df, bins=bin_range_campaignzScorenormalized, include_lowest=True, right=False, retbins=True)
+bin_range_campaignzScorenormalized = np.arange(zScore_CampaignMin , zScore_CampaignMax+step, step)
+out, bins = pd.cut(df['z_score_campaign'], bins=bin_range_campaignzScorenormalized, include_lowest=True, right=False, retbins=True)
 campaignHistogram = out.value_counts(sort=False).plot(kind = 'bar', title='Number of contacts performed during this campaign and for this client (zScore Normalization)')
 campaignPlotzScoreNormalization = plt.plot()
 plt.xlabel("Number of Contacts Performed")
 plt.ylabel("Frequency")
-plt.show()
-
-#Frequency of days for people
-campaigngCounts = df['campaign'].value_counts().plot.bar()
-plt.title('Housing of Client (Frequency in Excel Sheet)')
-plt.xlabel('Housing')
-plt.ylabel('Frequency')
 plt.show()
 
 ###################################################################
@@ -338,13 +355,6 @@ previousMean = df['previous'].mean()
 previousMedian = df['previous'].median()
 previousMax = df['previous'].max()
 previousMin = df['previous'].min()
-
-#prints raw version of column
-previousPlot = plt.plot(df['previous'])
-plt.title('Number of Contacts Performed Before this campaign and for this client (Raw Data)')
-plt.xlabel("Number of Contacts Performed")
-plt.ylabel("Frequency")
-plt.show()
 
 #This code prints out a formatted version of the previous Attribute from Bank-Full.csv
 step = 1
@@ -357,25 +367,34 @@ plt.ylabel("Frequency")
 plt.show()
 
 # Using Min-Max Normalization for previous Attribute
-previous_normalized_df = (((df['previous'] - previousMin) / (previousMax - previousMin))*(1.0-0)+0)
+def MinMaxScalar(X):
+    return (X - previousMin)/(previousMax-previousMin)
+
+df['minMaxNormalization_Previous'] = df['previous'].apply(MinMaxScalar)
+
+MinMaxNormalized_PreviousMin = df['minMaxNormalization_Previous'].min()
+MinMaxNormalized_PreviousMax = df['minMaxNormalization_Previous'].max()
 
 #Prints Min-Max Normalized Histogram of the previous Attribute
 step = 0.1
-previous_bin_range_normalized = np.arange(previous_normalized_df.min(), previous_normalized_df.max()+step, step+0.1)
-out, bins = pd.cut(previous_normalized_df, bins=previous_bin_range_normalized, include_lowest=True, right=False, retbins=True)
-out.value_counts(sort=False).plot.bar(title='Number of Contacts Performed Before this campaign and for this client (Min/Max Normalization)')
+previous_bin_range_normalized = np.arange(MinMaxNormalized_PreviousMin, MinMaxNormalized_PreviousMax+step, step)
+out, bins = pd.cut(df['minMaxNormalization_Previous'], bins=previous_bin_range_normalized, include_lowest=True, right=False, retbins=True)
+out.value_counts(sort=False).plot.bar(title='Number of Contacts Performed before this campaign and for this client (Min/Max Normalization)')
 previousPlotMinMaxNormalization = plt.plot()
 plt.xlabel("Number of Contacts Performed")
 plt.ylabel("Frequency")
 plt.show()
 
 # Using z-score Normalization of the previous Attribute
-previous_zScore_Normalized_df = ((df['previous'] - previousMedian) / previousStd)
+df['z_score_previous'] = stats.zscore(df['previous'])
+
+zScore_PreviousMin = df['z_score_previous'].min()
+zScore_PreviousMax = df['z_score_previous'].max()
 
 #Prints z-score Normalized Histogram of the previous Attribute
 step = 0.5
-bin_range_pdayszScorenormalized = np.arange(previous_zScore_Normalized_df.min(), previous_zScore_Normalized_df.max()+step, step)
-out, bins = pd.cut(previous_zScore_Normalized_df, bins=bin_range_pdayszScorenormalized, include_lowest=True, right=False, retbins=True)
+bin_range_pdayszScorenormalized = np.arange(zScore_PreviousMin, zScore_PreviousMax+step, step)
+out, bins = pd.cut(df['z_score_previous'], bins=bin_range_pdayszScorenormalized, include_lowest=True, right=False, retbins=True)
 previousHistogram = out.value_counts(sort=False).plot(kind = 'bar', title='Number of Contacts Performed Before this campaign and for this client (zScore Normalization)')
 previousPlotzScoreNormalization = plt.plot()
 plt.title('Number of Contacts Performed Before this campaign and for this client (zScore Normalization)')
@@ -399,13 +418,6 @@ pdaysMedian = df['pdays'].median()
 pdaysMax = df['pdays'].max()
 pdaysMin = df['pdays'].min()
 
-#prints raw version of column
-pdaysPlot = plt.plot(df['pdays'])
-plt.title('Number of Days that Passed by After the Client was Last Contacted from a Previous Campaign (Raw Data)')
-plt.xlabel("Number of Days Passed")
-plt.ylabel("Frequency")
-plt.show()
-
 #This code prints out a formatted version of the pdays Attribute from Bank-Full.csv
 step = 50
 pdays_bin_range = np.arange(pdaysMin,pdaysMax+step, step)
@@ -416,15 +428,21 @@ plt.xlabel("Number of Days Passed")
 plt.ylabel("Frequency")
 plt.show()
 
-df['pdays'].replace([-1], 0)
+#df['pdays'].replace([-1], 0)
 
 # Using Min-Max Normalization for pdays Attribute
-pdays_normalized_df = (((df['pdays'] - pdaysMin) / (pdaysMax - pdaysMin))*(1.0-0)+0)
+def MinMaxScalar(X):
+    return (X - pdaysMin)/(pdaysMax-pdaysMin)
+
+df['minMaxNormalization_Pdays'] = df['pdays'].apply(MinMaxScalar)
+
+MinMaxNormalized_PdaysMin = df['minMaxNormalization_Pdays'].min()
+MinMaxNormalized_PdaysMax = df['minMaxNormalization_Pdays'].max()
 
 #Prints Min-Max Normalized Histogram of the pdays Attribute
 step = 0.1
-pdays_bin_range_normalized = np.arange(pdays_normalized_df.min(), pdays_normalized_df.max()+step, step+0.1)
-out, bins = pd.cut(pdays_normalized_df, bins=pdays_bin_range_normalized, include_lowest=True, right=False, retbins=True)
+pdays_bin_range_normalized = np.arange(MinMaxNormalized_PdaysMin, MinMaxNormalized_PdaysMax+step, step)
+out, bins = pd.cut(df['minMaxNormalization_Pdays'], bins=pdays_bin_range_normalized, include_lowest=True, right=False, retbins=True)
 out.value_counts(sort=False).plot.bar(title='Number of Days that Passed by After the Client was Last Contacted from a Previous Campaign (Min/Max Normalization)')
 pdaysPlotMinMaxNormalization = plt.plot()
 plt.xlabel("Number of Days Passed")
@@ -432,12 +450,15 @@ plt.ylabel("Frequency")
 plt.show()
 
 # Using z-score Normalization of the Age Attribute
-pdays_zScore_Normalized_df = ((df['pdays'] - pdaysMedian) / pdaysStd)
+df['z_score_pdays'] = stats.zscore(df['pdays'])
+
+zScore_PdaysMin = df['z_score_pdays'].min()
+zScore_PdaysMax = df['z_score_pdays'].max()
 
 #Prints z-score Normalized Histogram of the pdays Attribute
 step = 0.5
-bin_range_pdayszScorenormalized = np.arange(pdays_zScore_Normalized_df.min(), pdays_zScore_Normalized_df.max()+step, step)
-out, bins = pd.cut(pdays_zScore_Normalized_df, bins=bin_range_pdayszScorenormalized, include_lowest=True, right=False, retbins=True)
+bin_range_pdayszScorenormalized = np.arange(zScore_PdaysMin , zScore_PdaysMax+step, step)
+out, bins = pd.cut(df['z_score_pdays'], bins=bin_range_pdayszScorenormalized, include_lowest=True, right=False, retbins=True)
 pdaysHistogram = out.value_counts(sort=False).plot(kind = 'bar', title='Number of Days that Passed by After the Client was Last Contacted from a Previous Campaign (zScore Normalization)')
 pdaysPlotzScoreNormalization = plt.plot()
 plt.title('Number of Days that Passed by After the Client was Last Contacted from a Previous Campaign')
@@ -447,8 +468,12 @@ plt.show()
 
 ###################################################################
 #Calculating y
-yCounts = df['y'].value_counts().plot.bar()
+df['yCounts'] = df['y'].value_counts()
+yCountsPlot = df['y'].value_counts().plot.bar()
 plt.title('y')
 plt.xlabel('Answers')
 plt.ylabel('Frequency')
 plt.show()
+
+yMin = df['yCounts'].min()
+yMax = df['yCounts'].max()
