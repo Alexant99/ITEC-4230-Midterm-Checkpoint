@@ -289,6 +289,12 @@ campaignMedian = df['campaign'].median()
 campaignMax = df['campaign'].max()
 campaignMin = df['campaign'].min()
 
+pOutcomeCounts = df['campaign'].value_counts().plot.bar()
+plt.title('Number of contacts performed during this campaign and for this client')
+plt.xlabel('Number of contacts performed')
+plt.ylabel('Frequency')
+plt.show()
+
 #This code prints out a formatted version of the Campaign Attribute from Bank-Full.csv
 step = 1
 duration_bin_range = np.arange(campaignMin, campaignMax+step, step)
@@ -412,6 +418,12 @@ pdaysMean = df['pdays'].mean()
 pdaysMedian = df['pdays'].median()
 pdaysMax = df['pdays'].max()
 pdaysMin = df['pdays'].min()
+
+pDaysCounts = df['pdays'].value_counts().plot.bar()
+plt.title('pdays')
+plt.xlabel('pdays')
+plt.ylabel('Frequency')
+plt.show()
 
 #This code prints out a formatted version of the pdays Attribute from Bank-Full.csv
 step = 50
