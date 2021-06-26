@@ -1,13 +1,12 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from pandas import cut
 from scipy import stats
-import matplotlib.dates as mdates
+import seaborn as sn
 
 df = pd.read_csv("H:\\bank-full.csv")
 
-df['job'] =df['job'].astype('category')
+df['job'] = df['job'].astype('category')
 df['marital'] =df['marital'].astype('category')
 df['education'] =df['education'].astype('category')
 df['default'] =df['default'].astype('category')
@@ -19,6 +18,12 @@ df['poutcome'] =df['poutcome'].astype('category')
 df['y'] =df['y'].astype('category')
 
 #df.isnull().sum().sum()
+
+#Correlation Calculations
+corrMatrix = df.corr()
+
+sn.heatmap(corrMatrix, annot=True)
+plt.show()
 
 #Calulating Age
 ageMean = df['age'].mean()
@@ -114,11 +119,6 @@ balanceMax = df['balance'].max()
 balanceMin = df['balance'].min()
 
 #This code prints out a formatted version of the Balance Attribute from Bank-Full.csv
-#NOT FINISHED
-#for index, row in df.itertuples():#
-#    if df['balance'] < 0:
-#        df['balance'] = df['balance'].replace([df.balance], value=0)
-
 step = 1000
 balance_bin_range = np.arange(balanceMin, balanceMax+step, step-1)
 out, bins = pd.cut(df['balance'], bins=balance_bin_range, include_lowest=True, right=False, retbins=True)
@@ -136,9 +136,6 @@ df['minMaxNormalization_Balance'] = df['balance'].apply(MinMaxScalar)
 
 MinMaxNormalized_BalanceMin = df['minMaxNormalization_Balance'].min()
 MinMaxNormalized_BalanceMax = df['minMaxNormalization_Balance'].max()
-
-print(MinMaxNormalized_BalanceMin)
-print(MinMaxNormalized_BalanceMax)
 
 #Prints Min-Max Normalized Histogram of the Balance Attribute
 step = 0.1
@@ -470,3 +467,4 @@ plt.show()
 
 yMin = df['yCounts'].min()
 yMax = df['yCounts'].max()
+
