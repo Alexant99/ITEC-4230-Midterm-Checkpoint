@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pandas import cut
 from scipy import stats
+import matplotlib.dates as mdates
 
 df = pd.read_csv("H:\\bank-full.csv")
 
@@ -16,9 +17,8 @@ df['contact'] =df['contact'].astype('category')
 df['month'] =df['month'].astype('category')
 df['poutcome'] =df['poutcome'].astype('category')
 df['y'] =df['y'].astype('category')
-print(df.info())
 
-df.isnull().sum().sum()
+#df.isnull().sum().sum()
 
 #Calulating Age
 ageMean = df['age'].mean()
@@ -190,20 +190,13 @@ dayMedian = df['day'].median()
 dayStd = df['day'].std()
 dayMax = df['day'].max()
 dayMin = df['day'].min()
-i = 0
 
-#dayPlot = plt.plot(df['day'])
-#for i in df['month']:
-#    if df['month']
-#        plt.title("Days of Week for May Unformatted")
-#        plt.xlabel('number of clients')
-#        plt.ylabel('day')
-#        plt.show()
-#while df['month'] == 'june':
-#    plt.title("Days of Week for June Unformatted")
-#    plt.xlabel('number of clients')
- #   plt.ylabel('day')
-  #  plt.show()
+#dayCounts = df['day'].value_counts().plot.bar()
+#plt.show()
+#fig = plt.figure()
+#ax = fig.add_subplot(111)
+#plt.plot(df.groupby(['month','day']))
+#plt.show()
 
 #This code prints out a formatted version of the Day Attribute from Bank-Full.csv
 step = dayMin
