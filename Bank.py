@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
-import seaborn as sn
 
 df = pd.read_csv("H:\\bank-full.csv")
 af = pd.DataFrame()
@@ -117,11 +116,11 @@ balanceMax = df['balance'].max()
 balanceMin = df['balance'].min()
 
 #This code prints out a formatted version of the Balance Attribute from Bank-Full.csv
-step = 5000
-balance_bin_range = np.arange(-5001, balanceMax+step, step)
-out, bins = pd.cut(df['balance'], bins=balance_bin_range, include_lowest=True, right=False, retbins=True)
-out.value_counts(sort=False).plot(kind='bar', title='Balance of Respondents (Formatted)')
-balancePlot = plt.plot(kind='bar')
+af['ClippedBalance'] = np.clip(df['balance'], -1000, 3000)
+step = 1000
+bin_range_ClippedBalance = np.arange(-1001, 3001+step, step)
+out, bins = pd.cut(af['ClippedBalance'], bins=bin_range_ClippedBalance, right=True, include_lowest=True, retbins=True)
+out.value_counts(sort=False).plot.bar(title='Balance of Respondents')
 plt.xlabel("Balance of Clients")
 plt.ylabel("Number of Clients")
 plt.show()
